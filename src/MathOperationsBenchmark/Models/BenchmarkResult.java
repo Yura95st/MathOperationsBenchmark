@@ -15,9 +15,9 @@ public class BenchmarkResult
 	public BenchmarkResult(DataType dataType, MathOperation mathOperation,
 		double operationsCount)
 	{
-		Guard.isNotNull(dataType, "dataType");
-		Guard.isNotNull(mathOperation, "mathOperation");
-		Guard.isMoreOrEqualToZero(operationsCount, "operationsCount");
+		Guard.notNull(dataType, "dataType");
+		Guard.notNull(mathOperation, "mathOperation");
+		Guard.moreOrEqualToZero(operationsCount, "operationsCount");
 
 		this._dataType = dataType;
 		this._mathOperation = mathOperation;
