@@ -15,14 +15,14 @@ public class Guard
 	public static <T> void listNotNullOrEmpty(Iterable<T> list, String listName)
 	{
 		Guard.notNull(list, listName);
-		
+
 		if (!list.iterator().hasNext())
 		{
 			throw new IllegalArgumentException(String.format(
 				"List can't be empty: %1$s", listName));
 		}
 	}
-	
+
 	/**
 	 * Checks if the specified argument is more or equal to zero.
 	 *
@@ -39,7 +39,7 @@ public class Guard
 				"Argument can't be less, than 0: %1$s", argumentName));
 		}
 	}
-
+	
 	/**
 	 * Checks if the specified argument is more or equal to zero.
 	 *
@@ -56,7 +56,24 @@ public class Guard
 				"Argument can't be less, than 0: %1$s", argumentName));
 		}
 	}
-	
+
+	/**
+	 * Checks if the specified argument is more than zero.
+	 *
+	 * @param argument
+	 *            the argument to test
+	 * @param argumentName
+	 *            the argument's name
+	 */
+	public static void moreThanZero(int argument, String argumentName)
+	{
+		if (argument <= 0)
+		{
+			throw new IllegalArgumentException(String.format(
+				"Argument can't be less or equal to 0: %1$s", argumentName));
+		}
+	}
+
 	/**
 	 * Checks if the specified argument is not null.
 	 *
