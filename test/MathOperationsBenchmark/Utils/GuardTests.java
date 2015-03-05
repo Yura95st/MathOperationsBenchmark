@@ -5,56 +5,56 @@ import org.junit.Test;
 public class GuardTests
 {
 	@Test(expected = IllegalArgumentException.class)
-	public void isMoreOrEqualToZero_DoubleNumberIsLessThanZero_ThrowsIllegalArgumentException()
+	public void MoreOrEqualToZero_DoubleNumberIsLessThanZero_ThrowsIllegalArgumentException()
 	{
 		double number = -1.0;
-		Guard.isMoreOrEqualToZero(number, "number");
+		Guard.moreOrEqualToZero(number, "number");
 	}
-	
+
 	@Test
-	public void isMoreOrEqualToZero_DoubleNumberisMoreOrEqualToZero_DoesNotThrowAnyException()
+	public void MoreOrEqualToZero_DoubleNumberisMoreOrEqualToZero_DoesNotThrowAnyException()
 	{
 		double number = 0.0;
-
-		Guard.isMoreOrEqualToZero(number, "number");
-
+		
+		Guard.moreOrEqualToZero(number, "number");
+		
 		number = 1.0;
-
-		Guard.isMoreOrEqualToZero(number, "number");
+		
+		Guard.moreOrEqualToZero(number, "number");
 	}
-	
+
 	@Test(expected = IllegalArgumentException.class)
-	public void isMoreOrEqualToZero_IntegerNumberIsLessThanZero_ThrowsIllegalArgumentException()
+	public void MoreOrEqualToZero_IntegerNumberIsLessThanZero_ThrowsIllegalArgumentException()
 	{
 		int number = -1;
-		Guard.isMoreOrEqualToZero(number, "number");
+		Guard.moreOrEqualToZero(number, "number");
 	}
-	
+
 	@Test
-	public void isMoreOrEqualToZero_IntegerNumberisMoreOrEqualToZero_DoesNotThrowAnyException()
+	public void MoreOrEqualToZero_IntegerNumberisMoreOrEqualToZero_DoesNotThrowAnyException()
 	{
 		int number = 0;
-
-		Guard.isMoreOrEqualToZero(number, "number");
-
+		
+		Guard.moreOrEqualToZero(number, "number");
+		
 		number = 1;
-
-		Guard.isMoreOrEqualToZero(number, "number");
+		
+		Guard.moreOrEqualToZero(number, "number");
 	}
-	
+
 	@Test
-	public void isNotNull_ObjectIsNotNull_DoesNotThrowAnyException()
+	public void NotNull_ObjectIsNotNull_DoesNotThrowAnyException()
 	{
 		Object tempObject = new Object();
-		
-		Guard.isNotNull(tempObject, "tempObject");
-	}
 
+		Guard.notNull(tempObject, "tempObject");
+	}
+	
 	@Test(expected = IllegalArgumentException.class)
-	public void isNotNull_ObjectIsNull_ThrowsIllegalArgumentException()
+	public void NotNull_ObjectIsNull_ThrowsIllegalArgumentException()
 	{
 		Object tempObject = null;
-		
-		Guard.isNotNull(tempObject, "tempObject");
+
+		Guard.notNull(tempObject, "tempObject");
 	}
 }
