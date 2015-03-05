@@ -1,60 +1,90 @@
 package MathOperationsBenchmark.Utils;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 public class GuardTests
 {
 	@Test(expected = IllegalArgumentException.class)
-	public void MoreOrEqualToZero_DoubleNumberIsLessThanZero_ThrowsIllegalArgumentException()
+	public void listNotNullOrEmpty_ListIsEmpty_ThrowsIllegalArgumentException()
+	{
+		Iterable<Object> list = new ArrayList<Object>();
+		String listName = "listName";
+
+		Guard.listNotNullOrEmpty(list, listName);
+	}
+	
+	@Test
+	public void listNotNullOrEmpty_ListIsNotEmpty_DoesNotThrowAnyException()
+	{
+		Iterable<Object> list = new ArrayList<Object>() {
+			{
+				this.add(new Object());
+			}
+		};
+		String listName = "listName";
+
+		Guard.listNotNullOrEmpty(list, listName);
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void listNotNullOrEmpty_ListIsNull_ThrowsIllegalArgumentException()
+	{
+		Guard.listNotNullOrEmpty(null, "listName");
+	}
+	
+	@Test(expected = IllegalArgumentException.class)
+	public void moreOrEqualToZero_DoubleNumberIsLessThanZero_ThrowsIllegalArgumentException()
 	{
 		double number = -1.0;
 		Guard.moreOrEqualToZero(number, "number");
 	}
-
+	
 	@Test
-	public void MoreOrEqualToZero_DoubleNumberisMoreOrEqualToZero_DoesNotThrowAnyException()
+	public void moreOrEqualToZero_DoubleNumberisMoreOrEqualToZero_DoesNotThrowAnyException()
 	{
 		double number = 0.0;
-		
+
 		Guard.moreOrEqualToZero(number, "number");
-		
+
 		number = 1.0;
-		
+
 		Guard.moreOrEqualToZero(number, "number");
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void MoreOrEqualToZero_IntegerNumberIsLessThanZero_ThrowsIllegalArgumentException()
+	public void moreOrEqualToZero_IntegerNumberIsLessThanZero_ThrowsIllegalArgumentException()
 	{
 		int number = -1;
 		Guard.moreOrEqualToZero(number, "number");
 	}
 
 	@Test
-	public void MoreOrEqualToZero_IntegerNumberisMoreOrEqualToZero_DoesNotThrowAnyException()
+	public void moreOrEqualToZero_IntegerNumberisMoreOrEqualToZero_DoesNotThrowAnyException()
 	{
 		int number = 0;
-		
+
 		Guard.moreOrEqualToZero(number, "number");
-		
+
 		number = 1;
-		
+
 		Guard.moreOrEqualToZero(number, "number");
 	}
-
+	
 	@Test
-	public void NotNull_ObjectIsNotNull_DoesNotThrowAnyException()
+	public void notNull_ObjectIsNotNull_DoesNotThrowAnyException()
 	{
 		Object tempObject = new Object();
-
+		
 		Guard.notNull(tempObject, "tempObject");
 	}
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void NotNull_ObjectIsNull_ThrowsIllegalArgumentException()
+	public void notNull_ObjectIsNull_ThrowsIllegalArgumentException()
 	{
 		Object tempObject = null;
-
+		
 		Guard.notNull(tempObject, "tempObject");
 	}
 }
