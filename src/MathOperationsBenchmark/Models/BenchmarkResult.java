@@ -4,7 +4,7 @@ import MathOperationsBenchmark.Enums.DataType;
 import MathOperationsBenchmark.Enums.MathOperation;
 import MathOperationsBenchmark.Utils.Guard;
 
-public class BenchmarkItem
+public class BenchmarkResult
 {
 	private DataType _dataType;
 
@@ -12,7 +12,7 @@ public class BenchmarkItem
 	
 	private double _operationsCount;
 
-	public BenchmarkItem(DataType dataType, MathOperation mathOperation,
+	public BenchmarkResult(DataType dataType, MathOperation mathOperation,
 		double operationsCount)
 	{
 		Guard.isNotNull(dataType, "dataType");
