@@ -3,6 +3,8 @@
  */
 package MathOperationsBenchmark.Helpers;
 
+import java.util.List;
+
 import MathOperationsBenchmark.Models.TableBuilderSettings;
 
 public interface ITableBuilder
@@ -15,13 +17,23 @@ public interface ITableBuilder
 	String buildTable();
 
 	/**
+	 * Gets the table's content.
+	 */
+	List<List<String>> getContent();
+
+	/**
+	 * Gets the table header's captions.
+	 */
+	List<String> getHeaderCaptions();
+	
+	/**
 	 * Sets the table's content.
 	 *
 	 * @param content
 	 *            the content
 	 */
 	void setContent(Iterable<Iterable<String>> content);
-
+	
 	/**
 	 * Sets the table header's captions.
 	 *
