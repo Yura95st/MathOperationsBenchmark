@@ -1,8 +1,12 @@
 package MathOperationsBenchmark.Models;
 
+import MathOperationsBenchmark.Utils.Guard;
+
 public class TableBuilderSettings
 {
 	private Character _cellDelimiterCharacter;
+
+	private String _defaultCellContent;
 	
 	private Character _lineCharacter;
 
@@ -13,6 +17,7 @@ public class TableBuilderSettings
 		this._cellDelimiterCharacter = '|';
 		this._lineCharacter = '-';
 		this._spaceCharacter = ' ';
+		this._defaultCellContent = "NULL";
 	}
 
 	/**
@@ -24,7 +29,17 @@ public class TableBuilderSettings
 	{
 		return this._cellDelimiterCharacter;
 	}
-
+	
+	/**
+	 * Gets the default cell's content.
+	 *
+	 * @return the default cell's content
+	 */
+	public String getDefaultCellContent()
+	{
+		return this._defaultCellContent;
+	}
+	
 	/**
 	 * Gets the line character.
 	 *
@@ -34,7 +49,7 @@ public class TableBuilderSettings
 	{
 		return this._lineCharacter;
 	}
-
+	
 	/**
 	 * Gets the space character.
 	 *
@@ -44,31 +59,47 @@ public class TableBuilderSettings
 	{
 		return this._spaceCharacter;
 	}
-
+	
 	/**
 	 * Sets the cell delimiter character.
 	 *
-	 * @param cellDelimiterCharacter the new cell delimiter character
+	 * @param cellDelimiterCharacter
+	 *            the new cell delimiter character
 	 */
 	public void setCellDelimiterCharacter(Character cellDelimiterCharacter)
 	{
 		this._cellDelimiterCharacter = cellDelimiterCharacter;
 	}
-
+	
+	/**
+	 * Sets the default cell's content.
+	 *
+	 * @param defaultContentValue
+	 *            the default cell's content
+	 */
+	public void setDefaultCellContent(String defaultCellContent)
+	{
+		Guard.notNull(defaultCellContent, "defaultCellContent");
+		
+		this._defaultCellContent = defaultCellContent;
+	}
+	
 	/**
 	 * Sets the line character.
 	 *
-	 * @param lineCharacter the new line character
+	 * @param lineCharacter
+	 *            the new line character
 	 */
 	public void setLineCharacter(Character lineCharacter)
 	{
 		this._lineCharacter = lineCharacter;
 	}
-
+	
 	/**
 	 * Sets the space character.
 	 *
-	 * @param spaceCharacter the new space character
+	 * @param spaceCharacter
+	 *            the new space character
 	 */
 	public void setSpaceCharacter(Character spaceCharacter)
 	{
