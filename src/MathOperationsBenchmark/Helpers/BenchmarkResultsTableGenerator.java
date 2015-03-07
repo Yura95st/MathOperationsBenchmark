@@ -1,223 +1,99 @@
 package MathOperationsBenchmark.Helpers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import MathOperationsBenchmark.Models.BenchmarkResult;
+import MathOperationsBenchmark.Models.TableBuilderSettings;
 import MathOperationsBenchmark.Utils.Guard;
 
 public class BenchmarkResultsTableGenerator implements
-IBenchmarkResultsTableGenerator
+		IBenchmarkResultsTableGenerator
 {
-	private String[] _tableHeaderCaptions;
+	private Character _histogramCharacter = 'x';
 	
-	private int[] _tableColumnWidths;
-	
-	private int _columnsCount;
-
 	private int _histogramMaxWidth = 25;
-	
-	private double _operationsCountMaxValue;
-	
-	private Character _tableCellDelimiterCharacter = '|';
 
-	private Character _tableHistogramCellCharacter = 'x';
+	private double _operationsCountMaxValue = 0;
 
-	private Character _tableLineCharacter = '-';
-	
-	private Character _tableSpaceCharacter = ' ';
-	
+	private ITableBuilder _tableBuilder;
+
 	public BenchmarkResultsTableGenerator()
 	{
-		this._tableHeaderCaptions = new String[] {
+		String[] headerCaptions = new String[] {
 			"DataType", "MathOperation", "OperationsCount", "Percentage",
 			"Histogram"
 		};
-		
-		this._columnsCount = this._tableHeaderCaptions.length;
 
-		this._tableColumnWidths = new int[this._columnsCount];
+		TableBuilderSettings tableBuilderSettings = new TableBuilderSettings();
+		
+		this._tableBuilder = new TableBuilder(headerCaptions.length,
+			tableBuilderSettings);
+
+		this._tableBuilder.setHeaderCaptions(Arrays.asList(headerCaptions));
 	}
-	
+
 	@Override
-	public String generateResultsTable(List<BenchmarkResult> resultsList)
+	public String generateResultsTable(
+		List<BenchmarkResult> benchmarkResultsList)
 	{
-		Guard.notNull(resultsList, "resultsList");
+		Guard.notNull(benchmarkResultsList, "benchmarkResultsList");
 		
-		for (BenchmarkResult benchmarkResult : resultsList)
+		this._operationsCountMaxValue = 0;
+		
+		for (BenchmarkResult benchmarkResult : benchmarkResultsList)
 		{
-			this.updateOperationsCountMaxValue(benchmarkResult);
-			this.updateColumnWidths(benchmarkResult);
+			this._operationsCountMaxValue = Math.max(
+				this._operationsCountMaxValue,
+				benchmarkResult.getOperationsCount());
 		}
 
-		StringBuilder stringBuilder = new StringBuilder();
+		List<Iterable<String>> tableContent = new ArrayList<Iterable<String>>();
 		
-		stringBuilder.append(this.getTableHeader());
-		
-		for (BenchmarkResult result : resultsList)
+		for (BenchmarkResult benchmarkResult : benchmarkResultsList)
 		{
-			stringBuilder.append(System.lineSeparator());
-			stringBuilder.append(this.getTableRow(result));
+			tableContent.add(this.getTableRow(benchmarkResult));
 		}
 
-		return stringBuilder.toString();
+		this._tableBuilder.setContent(tableContent);
+		
+		return this._tableBuilder.buildTable();
 	}
 
-	private String getCellContent(int columnIndex,
-		BenchmarkResult benchmarkResult)
+	private String getHistogramString(double operationsCount)
 	{
-		String cellContent = "";
-		
-		switch (columnIndex)
-		{
-			case 0:
-			{
-				cellContent = String.valueOf(benchmarkResult.getDataType());
-				break;
-			}
-			case 1:
-			{
-				cellContent = String
-						.valueOf(benchmarkResult.getMathOperation());
-				break;
-			}
-			case 2:
-			{
-				cellContent = String.valueOf(benchmarkResult
-					.getOperationsCount());
-				break;
-			}
-			case 3:
-			{
-				cellContent = Math.ceil(benchmarkResult.getOperationsCount()
-					/ this._operationsCountMaxValue * 100)
-					+ "%";
-				break;
-			}
-			case 4:
-			{
-				cellContent = this.getHistogramString(benchmarkResult);
-				break;
-			}
-
-			default:
-			{
-				cellContent = "Empty";
-				break;
-			}
-		}
-		
-		return cellContent;
-	}
-	
-	private String getHistogramString(BenchmarkResult benchmarkResult)
-	{
-		int count = (int) Math.ceil(benchmarkResult.getOperationsCount()
+		int count = (int) Math.ceil(operationsCount
 			/ this._operationsCountMaxValue * this._histogramMaxWidth);
-		
+
 		StringBuilder stringBuilder = new StringBuilder();
-		
+
 		for (int i = 0; i < count; i++)
 		{
-			stringBuilder.append(this._tableHistogramCellCharacter);
-		}
-		
-		return stringBuilder.toString();
-	}
-	
-	private String getTableCell(int columnIndex, String cellContent)
-	{
-		StringBuilder stringBuilder = new StringBuilder();
-		
-		if (columnIndex == 0)
-		{
-			stringBuilder.append(this._tableCellDelimiterCharacter);
+			stringBuilder.append(this._histogramCharacter);
 		}
 
-		stringBuilder.append(this._tableSpaceCharacter);
-		stringBuilder.append(cellContent);
-		
-		int numberOfSpacesToAppend = this._tableColumnWidths[columnIndex]
-				- cellContent.length();
-
-		for (int i = 0; i < numberOfSpacesToAppend; i++)
-		{
-			stringBuilder.append(this._tableSpaceCharacter);
-		}
-		
-		stringBuilder.append(this._tableSpaceCharacter);
-		stringBuilder.append(this._tableCellDelimiterCharacter);
-		
-		return stringBuilder.toString();
-	}
-	
-	private String getTableHeader()
-	{
-		StringBuilder stringBuilder = new StringBuilder();
-		
-		stringBuilder.append(this.getTableLine());
-		stringBuilder.append(System.lineSeparator());
-		
-		for (int i = 0; i < this._columnsCount; i++)
-		{
-			stringBuilder.append(this.getTableCell(i, this._tableHeaderCaptions[i]));
-		}
-
-		stringBuilder.append(System.lineSeparator());
-		
-		stringBuilder.append(this.getTableLine());
-		
-		return stringBuilder.toString();
-	}
-	
-	private String getTableLine()
-	{
-		StringBuilder stringBuilder = new StringBuilder();
-		
-		int tableWidth = 4 + 3 * (this._columnsCount - 1);
-		
-		for (int maxColumnWidth : this._tableColumnWidths)
-		{
-			tableWidth += maxColumnWidth;
-		}
-
-		for (int i = 0; i < tableWidth; i++)
-		{
-			stringBuilder.append(this._tableLineCharacter);
-		}
-		
-		return stringBuilder.toString();
-	}
-	
-	private String getTableRow(BenchmarkResult benchmarkResult)
-	{
-		StringBuilder stringBuilder = new StringBuilder();
-		
-		for (int i = 0; i < this._columnsCount; i++)
-		{
-			stringBuilder.append(this.getTableCell(i,
-				this.getCellContent(i, benchmarkResult)));
-		}
-		
 		return stringBuilder.toString();
 	}
 
-	private void updateColumnWidths(BenchmarkResult benchmarkResult)
+	private List<String> getTableRow(BenchmarkResult benchmarkResult)
 	{
-		for (int i = 0; i < this._columnsCount; i++)
-		{
-			String cellContent = this.getCellContent(i, benchmarkResult);
+		List<String> tableRow = new ArrayList<String>();
 
-			this._tableColumnWidths[i] = Math
-					.max(
-						this._tableColumnWidths[i],
-						Math.max(this._tableHeaderCaptions[i].length(),
-							cellContent.length()));
-		}
-	}
-	
-	private void updateOperationsCountMaxValue(BenchmarkResult benchmarkResult)
-	{
-		this._operationsCountMaxValue = Math.max(this._operationsCountMaxValue,
-			benchmarkResult.getOperationsCount());
+		tableRow.add(benchmarkResult.getDataType().name());
+
+		tableRow.add(benchmarkResult.getMathOperation().name());
+
+		tableRow.add(String.format("%1$.2f * 10^9", benchmarkResult.getOperationsCount()));
+		
+		int percentage = (int) Math.ceil(benchmarkResult
+			.getOperationsCount() / this._operationsCountMaxValue * 100);
+
+		tableRow.add(String.format("%1$d%%", percentage));
+
+		tableRow.add(this.getHistogramString(benchmarkResult
+				.getOperationsCount()));
+
+		return tableRow;
 	}
 }
