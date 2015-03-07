@@ -16,11 +16,57 @@ public class TableBuilderTest
 	private TableBuilderSettings _tableBuilderSettings;
 
 	@Test
-	public void setContent_ContentListContainsNullRows_SkipNullRows()
+	public void setContent_ContentContainsNullCellValues_ReplacesNullValuesWithDefaultCellValue()
 	{
 		// Arrange
 		String[] tableRow = new String[] {
-			"CaptionOne", "CaptionTwo", "CaptionThree"
+			"A", null, "C"
+		};
+
+		int columnsCount = tableRow.length;
+
+		List<Iterable<String>> newContent = new ArrayList<Iterable<String>>();
+
+		newContent.add(Arrays.asList(tableRow));
+
+		// Arrange - create target
+		ITableBuilder target = new TableBuilder(columnsCount,
+			this._tableBuilderSettings);
+
+		// Act
+		target.setContent(newContent);
+
+		// Assert
+		List<List<String>> content = target.getContent();
+
+		Assert.assertEquals(newContent.size(), content.size());
+
+		for (int i = 0, count = content.size(); i < count; i++)
+		{
+			List<String> contentRow = content.get(i);
+
+			Assert.assertEquals(columnsCount, contentRow.size());
+
+			int j = 0;
+
+			for (String cellContent : newContent.get(i))
+			{
+				cellContent = cellContent == null ? this._tableBuilderSettings
+					.getDefaultCellContent() : cellContent;
+				
+				Assert.assertEquals(cellContent, contentRow.get(j));
+
+					j++;
+			}
+		}
+	}
+	
+	@Test
+	public void setContent_ContentListContainsNullRows_SkipsNullRows()
+	{
+		// Arrange
+		String[] tableRow = new String[] {
+			"A", "B", "C"
 		};
 
 		List<Iterable<String>> newContent = new ArrayList<Iterable<String>>();
@@ -61,7 +107,7 @@ public class TableBuilderTest
 			}
 		}
 	}
-
+	
 	@Test(expected = IllegalArgumentException.class)
 	public void setContent_ContentListIsNull_ThrowsIllegalArgumentException()
 	{
@@ -73,11 +119,11 @@ public class TableBuilderTest
 	}
 
 	@Test
-	public void setContent_ContentRowsSizeIsGreaterThanColumnsCount_IgnoreExtraCells()
+	public void setContent_ContentRowsSizeIsGreaterThanColumnsCount_IgnoresExtraCells()
 	{
 		// Arrange
 		String[] tableRow = new String[] {
-			"CaptionOne", "CaptionTwo", "CaptionThree"
+			"A", "B", "C"
 		};
 
 		int columnsCount = tableRow.length - 1;
@@ -116,13 +162,13 @@ public class TableBuilderTest
 			}
 		}
 	}
-	
+
 	@Test
-	public void setContent_ContentRowsSizeIsLessThanColumnsCount_SetMissingCellsAsNull()
+	public void setContent_ContentRowsSizeIsLessThanColumnsCount_SetsMissingCellsAsNull()
 	{
 		// Arrange
 		String[] tableRow = new String[] {
-			"CaptionOne", "CaptionTwo", "CaptionThree"
+			"A", "B", "C"
 		};
 
 		int columnsCount = tableRow.length + 1;
@@ -162,8 +208,41 @@ public class TableBuilderTest
 
 			for (; j < columnsCount; j++)
 			{
-				Assert.assertEquals(null, contentRow.get(j));
+				Assert.assertEquals(
+					this._tableBuilderSettings.getDefaultCellContent(),
+					contentRow.get(j));
 			}
+		}
+	}
+	
+	@Test
+	public void setHeaderCaptions_HeaderCaptionsContainsNullValues_ReplacesNullValuesWithDefaultCellValue()
+	{
+		// Arrange
+		String[] newHeaderCaptions = {
+			"A", null, "C"
+		};
+
+		int columnCount = newHeaderCaptions.length;
+
+		// Arrange - create target
+		ITableBuilder target = new TableBuilder(columnCount,
+			this._tableBuilderSettings);
+
+		// Act
+		target.setHeaderCaptions(Arrays.asList(newHeaderCaptions));
+
+		// Assert
+		List<String> headerCaptions = target.getHeaderCaptions();
+
+		Assert.assertEquals(columnCount, headerCaptions.size());
+
+		for (int i = 0, count = columnCount; i < count; i++)
+		{
+			String expectedCaption = newHeaderCaptions[i] == null ? this._tableBuilderSettings
+				.getDefaultCellContent() : newHeaderCaptions[i];
+			
+			Assert.assertEquals(expectedCaption, headerCaptions.get(i));
 		}
 	}
 	
@@ -178,11 +257,11 @@ public class TableBuilderTest
 	}
 
 	@Test
-	public void setHeaderCaptions_HeaderCaptionsListSizeIsGreaterThanColumnsCount_IgnoreExtraCaptions()
+	public void setHeaderCaptions_HeaderCaptionsListSizeIsGreaterThanColumnsCount_IgnoresExtraCaptions()
 	{
 		// Arrange
 		String[] newHeaderCaptions = {
-			"CaptionOne", "CaptionTwo", "CaptionThree"
+			"A", "B", "C"
 		};
 
 		int columnCount = newHeaderCaptions.length - 1;
@@ -204,13 +283,13 @@ public class TableBuilderTest
 			Assert.assertEquals(newHeaderCaptions[i], headerCaptions.get(i));
 		}
 	}
-	
+
 	@Test
-	public void setHeaderCaptions_HeaderCaptionsListSizeIsLessThanColumnsCount_SetsMissingCaptionsAsNull()
+	public void setHeaderCaptions_HeaderCaptionsListSizeIsLessThanColumnsCount_InitsMissingCaptionsWithDefaultCellValue()
 	{
 		// Arrange
 		String[] newHeaderCaptions = {
-			"CaptionOne", "CaptionTwo", "CaptionThree"
+			"A", "B", "C"
 		};
 
 		int columnCount = newHeaderCaptions.length + 3;
@@ -234,7 +313,9 @@ public class TableBuilderTest
 
 		for (int i = newHeaderCaptions.length; i < columnCount; i++)
 		{
-			Assert.assertEquals(null, headerCaptions.get(i));
+			Assert.assertEquals(
+				this._tableBuilderSettings.getDefaultCellContent(),
+				headerCaptions.get(i));
 		}
 	}
 
