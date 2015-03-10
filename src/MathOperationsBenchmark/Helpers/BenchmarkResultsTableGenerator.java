@@ -63,7 +63,7 @@ public class BenchmarkResultsTableGenerator implements
 
 	private String getHistogramString(double operationsCount)
 	{
-		int count = (int) Math.ceil(operationsCount
+		int count = (int) Math.floor(operationsCount
 			/ this._operationsCountMaxValue * this._histogramMaxWidth);
 
 		StringBuilder stringBuilder = new StringBuilder();
@@ -86,7 +86,7 @@ public class BenchmarkResultsTableGenerator implements
 
 		tableRow.add(String.format("%1$.5f * 10^9", benchmarkResult.getOperationsCount()));
 		
-		int percentage = (int) Math.ceil(benchmarkResult
+		int percentage = (int) Math.floor(benchmarkResult
 			.getOperationsCount() / this._operationsCountMaxValue * 100);
 
 		tableRow.add(String.format("%1$d%%", percentage));
