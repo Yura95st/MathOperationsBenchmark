@@ -84,7 +84,7 @@ public class BenchmarkResultsTableGenerator implements
 
 		tableRow.add(benchmarkResult.getMathOperation().name());
 
-		tableRow.add(String.format("%1$.2f * 10^9", benchmarkResult.getOperationsCount()));
+		tableRow.add(String.format("%1$.5f * 10^9", benchmarkResult.getOperationsCount()));
 		
 		int percentage = (int) Math.ceil(benchmarkResult
 			.getOperationsCount() / this._operationsCountMaxValue * 100);

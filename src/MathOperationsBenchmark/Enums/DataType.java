@@ -2,9 +2,8 @@ package MathOperationsBenchmark.Enums;
 
 public enum DataType
 {
-	Character,
-	Int,
-	Long,
+	Double,
 	Float,
-	Double
+	Integer,
+	Long
 }
