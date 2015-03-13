@@ -16,7 +16,7 @@ public class Main
 
 		List<BenchmarkResult> benchmarkResults;
 		
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 1; i++)
 		{
 			benchmarkResults = mathOperationsTester.run();
 			
