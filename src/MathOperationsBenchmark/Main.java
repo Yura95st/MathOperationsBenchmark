@@ -12,14 +12,15 @@ public class Main
 	{
 		IMathOperationsTester mathOperationsTester = new MathOperationsTester();
 
-		IBenchmarkResultsTableGenerator resultsTableGenerator = new BenchmarkResultsTableGenerator();
+		IBenchmarkResultsTableGenerator resultsTableGenerator =
+			new BenchmarkResultsTableGenerator();
 
 		List<BenchmarkResult> benchmarkResults;
-		
+
 		for (int i = 0; i < 1; i++)
 		{
 			benchmarkResults = mathOperationsTester.run();
-			
+
 			System.out.println(resultsTableGenerator
 					.generateResultsTable(benchmarkResults));
 		}
