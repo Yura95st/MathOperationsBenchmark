@@ -10,42 +10,42 @@ import MathOperationsBenchmark.Utils.Guard;
 
 public class TableBuilder implements ITableBuilder
 {
-	private int _columnsCount;
-	
-	private int[] _columnWidths;
-	
-	private List<String[]> _content;
-	
-	private int[] _contentColumnWidths;
+	private final int _columnsCount;
 
-	private String[] _headerCaptions;
-	
+	private final int[] _columnWidths;
+
+	private final List<String[]> _content;
+
+	private final int[] _contentColumnWidths;
+
+	private final String[] _headerCaptions;
+
 	private TableBuilderSettings _settings;
-	
+
 	public TableBuilder(int columnsCount, TableBuilderSettings settings)
 	{
 		Guard.moreThanZero(columnsCount, "columnsCount");
 		Guard.notNull(settings, "settings");
-		
+
 		this._columnsCount = columnsCount;
 		this._settings = settings;
 
 		this._headerCaptions = new String[columnsCount];
 		this._content = new ArrayList<String[]>();
-		
+
 		this._columnWidths = new int[columnsCount];
 		this._contentColumnWidths = new int[columnsCount];
-		
+
 		this.resetTableRow(this._headerCaptions);
 	}
-	
+
 	@Override
 	public String buildTable()
 	{
 		this.updateColumnWidths();
-		
+
 		StringBuilder stringBuilder = new StringBuilder();
-		
+
 		stringBuilder.append(this.getTableHeader());
 
 		if (this._content.size() > 0)
@@ -67,54 +67,58 @@ public class TableBuilder implements ITableBuilder
 	public List<List<String>> getContent()
 	{
 		List<List<String>> result = new ArrayList<List<String>>();
-		
+
 		for (String[] tableRow : this._content)
 		{
 			result.add(Arrays.asList(tableRow));
 		}
-		
+
 		return result;
 	}
-	
+
 	@Override
 	public List<String> getHeaderCaptions()
 	{
 		return Arrays.asList(this._headerCaptions);
 	}
-	
+
 	@Override
 	public void setContent(Iterable<Iterable<String>> content)
 	{
 		Guard.notNull(content, "content");
 
 		this.resetContent();
-		
+
 		for (Iterable<String> row : content)
 		{
 			String[] tableRow = new String[this._columnsCount];
-			
+
 			this.resetTableRow(tableRow);
-			
+
 			if (row != null)
 			{
 				int i = 0;
 				Iterator<String> iterator = row.iterator();
-				
-				while (i < this._columnsCount && iterator.hasNext())
+
+				while (i < this._columnsCount)
 				{
-					String cellContent = iterator.next();
-					
-					if (cellContent != null)
+					if (iterator.hasNext())
 					{
-						tableRow[i] = cellContent;
+						String cellContent = iterator.next();
+
+						if (cellContent != null)
+						{
+							tableRow[i] = cellContent;
+						}
 					}
-					
-					this._contentColumnWidths[i] = Math.max(
-						this._contentColumnWidths[i], tableRow[i].length());
+
+					this._contentColumnWidths[i] =
+						Math.max(this._contentColumnWidths[i],
+							tableRow[i].length());
 
 					i++;
 				}
-				
+
 				this._content.add(tableRow);
 			}
 		}
@@ -124,13 +128,13 @@ public class TableBuilder implements ITableBuilder
 	public void setHeaderCaptions(Iterable<String> headerCaptions)
 	{
 		Guard.notNull(headerCaptions, "headerCaptions");
-		
+
 		// Reset header captions
 		this.resetTableRow(this._headerCaptions);
-		
+
 		int i = 0;
 		Iterator<String> iterator = headerCaptions.iterator();
-		
+
 		while (i < this._columnsCount && iterator.hasNext())
 		{
 			String caption = iterator.next();
@@ -148,7 +152,7 @@ public class TableBuilder implements ITableBuilder
 	public void setSettings(TableBuilderSettings settings)
 	{
 		Guard.notNull(settings, "settings");
-		
+
 		this._settings = settings;
 	}
 
@@ -160,13 +164,13 @@ public class TableBuilder implements ITableBuilder
 		{
 			stringBuilder.append(this._settings.getCellDelimiterCharacter());
 		}
-		
+
 		stringBuilder.append(this._settings.getSpaceCharacter());
 		stringBuilder.append(cellContent);
 
-		int numberOfSpacesToAppend = this._columnWidths[columnIndex]
-			- cellContent.length();
-		
+		int numberOfSpacesToAppend =
+			this._columnWidths[columnIndex] - cellContent.length();
+
 		for (int i = 0; i < numberOfSpacesToAppend; i++)
 		{
 			stringBuilder.append(this._settings.getSpaceCharacter());
@@ -190,7 +194,7 @@ public class TableBuilder implements ITableBuilder
 		{
 			stringBuilder.append(this.getTableCell(i, this._headerCaptions[i]));
 		}
-		
+
 		stringBuilder.append(System.lineSeparator());
 
 		stringBuilder.append(this.getTableLine());
@@ -208,7 +212,7 @@ public class TableBuilder implements ITableBuilder
 		{
 			tableWidth += maxColumnWidth;
 		}
-		
+
 		for (int i = 0; i < tableWidth; i++)
 		{
 			stringBuilder.append(this._settings.getLineCharacter());
@@ -228,11 +232,11 @@ public class TableBuilder implements ITableBuilder
 
 		return stringBuilder.toString();
 	}
-	
+
 	private void resetContent()
 	{
 		this._content.clear();
-		
+
 		// Clear the content column widths
 		Arrays.fill(this._contentColumnWidths, 0);
 	}
@@ -246,8 +250,9 @@ public class TableBuilder implements ITableBuilder
 	{
 		for (int i = 0; i < this._columnsCount; i++)
 		{
-			this._columnWidths[i] = Math.max(this._contentColumnWidths[i],
-				this._headerCaptions[i].length());
+			this._columnWidths[i] =
+				Math.max(this._contentColumnWidths[i],
+					this._headerCaptions[i].length());
 		}
 	}
 }
